@@ -1,0 +1,6 @@
+:root {
+    --PhoneInputCountryFlag-height: 35px; /* Adjust flag icon height */
+    --PhoneInputCountryFlag-borderColor: black/* Flag icon outline color */
+    --PhoneInputCountrySelectArrow-color: blue; /* Country select arrow color */
+    --PhoneInput-color--focus: blue;
+  }
