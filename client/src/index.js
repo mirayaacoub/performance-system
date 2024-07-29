@@ -10,8 +10,8 @@ import { createTheme } from '@mui/material';
 
 import { extendTheme as extendJoyTheme } from '@mui/joy/styles';
 import { CssVarsProvider as JoyThemeProvider } from '@mui/joy/styles';
-
-
+import store from './store';
+import { Provider } from 'react-redux';
 // import { createTheme } from '@mui/system';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 const theme = createTheme({
@@ -68,11 +68,13 @@ const theme = createTheme({
 
 root.render(
   <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <App />
-      </LocalizationProvider>
-    </ThemeProvider>
+    <Provider store={store}>
+      <ThemeProvider theme={theme}>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <App />
+        </LocalizationProvider>
+      </ThemeProvider>
+    </Provider>
   </React.StrictMode>
 );
 

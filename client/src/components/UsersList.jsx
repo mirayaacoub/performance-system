@@ -1,7 +1,10 @@
+import React from 'react';
 import { Box, Container, List } from "@mui/material";
 import UserCard from "./UserCard";
 
-function UsersList({ users, handleDialog }) {
+
+function UsersList({ users }) {
+    console.log('users',users)
     return (
         <Container maxWidth="md">
             <Box
@@ -9,15 +12,14 @@ function UsersList({ users, handleDialog }) {
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    mt: 2, // Add margin top for spacing
+                    mt: 2, 
                 }}
             >
                 <List>
-                {users.map((user) => (
-                        <UserCard 
-                            key={user.id} 
-                            user={user} 
-                            handleDialog={handleDialog} 
+                    {users.map((user) => (
+                        <UserCard
+                            key={user.id}
+                            user={user}
                         />
                     ))}
                 </List>

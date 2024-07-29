@@ -1,0 +1,19 @@
+/* HomePage.css */
+.home-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+}
+
+/* HomePage.css */
+.typed-text {
+    font-family: 'Arial, sans-serif';
+    font-size: 4rem;
+    color: #333;
+    font-weight: bold;
+    line-height: 1.5;
+    letter-spacing: 2px;
+}

@@ -4,39 +4,29 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { useState, useRef } from "react";
 import dayjs from 'dayjs';
 import React from 'react';
-import PhoneInput, { } from 'react-phone-number-input';
-import {
-    isPossiblePhoneNumber,
-    isValidPhoneNumber,
-    validatePhoneNumberLength, parsePhoneNumberFromString
-} from 'libphonenumber-js'
-
-//styles
+import PhoneInput from 'react-phone-number-input';
+import { isValidPhoneNumber, validatePhoneNumberLength, parsePhoneNumberFromString } from 'libphonenumber-js';
 import 'react-phone-number-input/style.css';
 import '../phone-input-style.css';
+import { useDispatch } from 'react-redux';
+import { addUser, editUser } from '../slices/usersSlice'; // Import the action
+import { useNavigate } from "react-router-dom";
 
-function UserForm({ formTitle = 'Create User', onLogin, showSubmitButton = true, defaultValues = {
-    defaultId: '',
-    defaultEmail: '',
-    defaultFn: '',
-    defaultLn: '',
-    defaultPhoneNumber: '',
-    defaultCompany: '',
-    defaultDivision: '',
-    defaultStartingDate: dayjs()
-} }) {
+function UserForm({ formTitle = 'Create User', defaultValues, isEditDialog }) {
 
-    const [id, setId] = useState(defaultValues.defaultId);
-    const [email, setEmail] = useState(defaultValues.defaultEmail);
-    const [fn, setFn] = useState(defaultValues.defaultFn);
-    const [ln, setLn] = useState(defaultValues.defaultLn);
-    const [phoneNumber, setPhoneNumber] = useState(defaultValues.defaultPhoneNumber);
-    const [company, setCompany] = useState(defaultValues.defaultCompany);
-    const [division, setDivision] = useState(defaultValues.defaultDivision);
-    const [startingDate, setStartingDate] = useState(dayjs(defaultValues.defaultStartingDate));
-    const [users, setUsers] = useState([]);
+    const dispatch = useDispatch(); // Initialize dispatch
+    const [id, setId] = useState(defaultValues?.id || '');
+    const [email, setEmail] = useState(defaultValues?.email || '');
+    const [fn, setFn] = useState(defaultValues?.fn || '');
+    const [ln, setLn] = useState(defaultValues?.ln || '');
+    const [phoneNumber, setPhoneNumber] = useState(defaultValues?.phone || '');
+    const [company, setCompany] = useState(defaultValues?.company || '');
+    const [division, setDivision] = useState(defaultValues?.division || '');
+    const [startingDate, setStartingDate] = useState(dayjs(defaultValues?.startingDate || dayjs()));
     const [errors, setErrors] = useState({});
     const inputRef = useRef(null);
+
+    const navigate = useNavigate();
 
     const CustomPhoneInput = React.forwardRef((props, ref) => (
         <TextField
@@ -54,7 +44,6 @@ function UserForm({ formTitle = 'Create User', onLogin, showSubmitButton = true,
     ));
 
     const handleSubmit = (e) => {
-
         e.preventDefault();
         const userData = {
             id: id,
@@ -71,9 +60,18 @@ function UserForm({ formTitle = 'Create User', onLogin, showSubmitButton = true,
             return;
         }
 
-        setUsers([...users, userData]);
-        onLogin([...users, userData]);
-        reset();
+        if (isEditDialog) {
+            console.log('update user', userData);
+            dispatch(editUser(userData));
+            alert("User updated succesfully");
+            return;
+        } else {
+            console.log('add user: userData', userData)
+            dispatch(addUser(userData)); // Dispatch the action to add user
+            navigate('/users');
+            reset();
+        }
+
     }
 
     const reset = () => {
@@ -123,7 +121,7 @@ function UserForm({ formTitle = 'Create User', onLogin, showSubmitButton = true,
                 newErrors.phone = 'Phone Number is not valid';
             } else {
                 const nationalNumber = phoneNumberObj.nationalNumber;
-                const countryCode = phoneNumberObj.country; // Typically 'LB' for Lebanon
+                const countryCode = phoneNumberObj.country;
 
                 if (!isValidPhoneNumber(nationalNumber, countryCode)) {
                     newErrors.phone = 'Phone Number is not valid';
@@ -132,7 +130,6 @@ function UserForm({ formTitle = 'Create User', onLogin, showSubmitButton = true,
                     if (lengthValidation) {
                         newErrors.phone = `Phone Number is ${lengthValidation}`;
                     }
-
                 }
             }
         }
@@ -141,7 +138,6 @@ function UserForm({ formTitle = 'Create User', onLogin, showSubmitButton = true,
 
         return Object.keys(newErrors).length === 0;
     }
-
 
     return (
         <Box sx={{
@@ -161,7 +157,7 @@ function UserForm({ formTitle = 'Create User', onLogin, showSubmitButton = true,
                             </Box>
                         </Grid>
 
-                        <Grid item xs={6}>
+                        <Grid item xs={12} sm={6}>
                             <TextField
                                 margin="normal"
                                 required
@@ -176,7 +172,7 @@ function UserForm({ formTitle = 'Create User', onLogin, showSubmitButton = true,
                                 helperText={errors.id}
                             />
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={12} sm={6}>
                             <TextField
                                 margin="normal"
                                 required
@@ -192,7 +188,7 @@ function UserForm({ formTitle = 'Create User', onLogin, showSubmitButton = true,
                                 helperText={errors.email}
                             />
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={12} sm={6}>
                             <TextField
                                 margin="normal"
                                 required
@@ -207,7 +203,7 @@ function UserForm({ formTitle = 'Create User', onLogin, showSubmitButton = true,
                                 helperText={errors.fn}
                             />
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={12} sm={6}>
                             <TextField
                                 margin="normal"
                                 required
@@ -222,7 +218,7 @@ function UserForm({ formTitle = 'Create User', onLogin, showSubmitButton = true,
                                 helperText={errors.ln}
                             />
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={12} sm={6}>
                             <PhoneInput
                                 placeholder="Enter phone number"
                                 value={phoneNumber}
@@ -237,7 +233,7 @@ function UserForm({ formTitle = 'Create User', onLogin, showSubmitButton = true,
                                 helperText={errors.phone}
                             />
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={12} sm={6}>
                             <TextField
                                 margin="normal"
                                 required
@@ -252,7 +248,7 @@ function UserForm({ formTitle = 'Create User', onLogin, showSubmitButton = true,
                                 helperText={errors.company}
                             />
                         </Grid>
-                        <Grid item xs={6} sx={{ mt: 1 }}>
+                        <Grid item xs={12} sm={6} sx={{ mt: 1 }}>
                             <FormControl fullWidth error={!!errors.division}>
                                 <InputLabel id="division-select-label">Division</InputLabel>
                                 <Select
@@ -270,36 +266,29 @@ function UserForm({ formTitle = 'Create User', onLogin, showSubmitButton = true,
                                 {errors.division && <Typography color="error" variant="body2">{errors.division}</Typography>}
                             </FormControl>
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={12} sm={6}>
                             <DemoContainer components={['DatePicker']}>
                                 <DatePicker
                                     label="Starting Date"
                                     value={startingDate}
                                     onChange={handleDatePickerChange}
-                                    renderInput={(params) => (
-                                        <TextField
-                                            {...params}
-                                            fullWidth
-                                            required
-                                            error={!!errors.date}
-                                            helperText={errors.date}
-                                        />
-                                    )}
+                                    renderInput={(params) => <TextField {...params} />}
                                 />
                             </DemoContainer>
                         </Grid>
-                        {showSubmitButton && (
-                            <Grid item xs>
-                                <Button
-                                    type="submit"
-                                    fullWidth
-                                    variant="contained"
-                                    sx={{ mt: 3, mb: 2 }}
-                                >
-                                    Create User
-                                </Button>
-                            </Grid>
-                        )}
+
+
+                        <Grid item xs={12}>
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                sx={{ mt: 3, mb: 2 }}
+                            >
+                                {formTitle}
+                            </Button>
+                        </Grid>
+
                     </Grid>
                 </form>
             </Container>

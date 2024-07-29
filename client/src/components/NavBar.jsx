@@ -4,53 +4,45 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
-
-//icon
+import Drawer from '@mui/material/Drawer';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemText from '@mui/material/ListItemText';
+import MenuIcon from '@mui/icons-material/Menu';
+import CloseIcon from '@mui/icons-material/Close';
 import icon from '../assets/logo.png';
+import { Link, useNavigate } from 'react-router-dom';
 
-//pages
-import HomePage from '../pages/HomePage';
+const pages = ['home', 'login', 'create', 'users'];
 
-const pages = ['home', 'login', 'users'];
-const settings = ['Profile', 'Dashboard', 'Logout'];
+function NavBar() {
+    const [anchorElNav, setAnchorElNav] = React.useState(false);
+    const navigate = useNavigate();
 
-function NavBar({ setCurrentPage }) {
-    const [anchorElNav, setAnchorElNav] = React.useState(null);
-    const [anchorElUser, setAnchorElUser] = React.useState(null);
-
-    // const handleOpenNavMenu = (event) => {
-    //     setAnchorElNav(event.currentTarget);
-    // };
-    // const handleOpenUserMenu = (event) => {
-    //     setAnchorElUser(event.currentTarget);
-    // };
-
-    // const handleCloseNavMenu = () => {
-    //     setAnchorElNav(null);
-    // };
-
-    // const handleCloseUserMenu = () => {
-    //     setAnchorElUser(null);
-    // };
     const handleLogoClick = () => {
         window.open('https://www.aspiresoftware.com/', '_blank', 'noopener,noreferrer');
     };
+
+    const handleRoute = (route) => {
+        navigate(route);
+    };
+
+    const handleDrawerToggle = () => {
+        setAnchorElNav(!anchorElNav);
+    };
+
     return (
         <AppBar position="static">
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
-                    <IconButton onClick={handleLogoClick}>
-                        <img src={icon} alt="icon" style={{ width: '100px', height: '50px' }}  />
+                    <IconButton onClick={handleLogoClick} sx={{ display: { xs: 'block', md: 'none' } }}>
+                        <img src={icon} alt="icon" style={{ width: '80px', height: '40px' }} />
                     </IconButton>
 
-                    <Box sx={{ flexGrow: 4, display: 'flex', justifyContent: 'center' }}>
+                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                         <Typography
                             variant="h6"
                             noWrap
@@ -58,10 +50,9 @@ function NavBar({ setCurrentPage }) {
                             href=""
                             sx={{
                                 mr: 2,
-                                display: { xs: 'none', md: 'flex' },
                                 fontFamily: 'monospace',
                                 fontWeight: 700,
-                                letterSpacing: '.2rem',
+                                letterSpacing: '.1rem',
                                 color: 'inherit',
                                 textDecoration: 'none',
                             }}
@@ -70,48 +61,12 @@ function NavBar({ setCurrentPage }) {
                         </Typography>
                     </Box>
 
-                    {/* <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-                        <IconButton
-                            size="large"
-                            aria-label="account of current user"
-                            aria-controls="menu-appbar"
-                            aria-haspopup="true"
-                            onClick={handleOpenNavMenu}
-                            color="inherit"
-                        >
-                            <MenuIcon />
-                        </IconButton>
-                        <Menu
-                            id="menu-appbar"
-                            anchorEl={anchorElNav}
-                            anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'left',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'left',
-                            }}
-                            open={Boolean(anchorElNav)}
-                            onClose={handleCloseNavMenu}
-                            sx={{
-                                display: { xs: 'block', md: 'none' },
-                            }}
-                        >
-                            {pages.map((page) => (
-                                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                                    <Typography textAlign="center">{page}</Typography>
-                                </MenuItem>
-                            ))}
-                        </Menu>
-                    </Box> */}
-                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'center' }}>
                         {pages.map((page) => (
-                            
                             <Button
                                 key={page}
-                                onClick={() => setCurrentPage(page)}
+                                component={Link}
+                                to={`/${page}`}
                                 sx={{ my: 2, color: 'white', display: 'block' }}
                             >
                                 {page.toUpperCase()}
@@ -119,40 +74,51 @@ function NavBar({ setCurrentPage }) {
                         ))}
                     </Box>
 
-                    {/* logged in user navigation links options */}
-                    {/* <Box sx={{ flexGrow: 0 }}>
-                        <Tooltip title="Open settings">
-                            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-                            </IconButton>
-                        </Tooltip>
-                        <Menu
-                            sx={{ mt: '45px' }}
-                            id="menu-appbar"
-                            anchorEl={anchorElUser}
-                            anchorOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            open={Boolean(anchorElUser)}
-                            onClose={handleCloseUserMenu}
+                    <Box sx={{ flexGrow: 0, display: { xs: 'flex', md: 'none' } }}>
+                        <IconButton
+                            edge="end"
+                            color="inherit"
+                            aria-label="menu"
+                            onClick={handleDrawerToggle}
                         >
-
-                            {settings.map((setting) => (
-                                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                    <Typography textAlign="center">{setting}</Typography>
-                                </MenuItem>
-                            ))}
-                        </Menu>
-                    </Box> */}
+                            <MenuIcon />
+                        </IconButton>
+                    </Box>
                 </Toolbar>
             </Container>
+
+            <Drawer
+                anchor="right"
+                open={anchorElNav}
+                onClose={handleDrawerToggle}
+                sx={{ '& .MuiDrawer-paper': { width: 250 } }}
+            >
+                <Box
+                    sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}
+                    role="presentation"
+                    onClick={handleDrawerToggle}
+                    onKeyDown={handleDrawerToggle}
+                >
+                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', p: 1 }}>
+                        <IconButton onClick={handleDrawerToggle}>
+                            <CloseIcon />
+                        </IconButton>
+                    </Box>
+                    <List>
+                        {pages.map((page) => (
+                            <ListItem key={page} disablePadding>
+                                <ListItemButton component={Link} to={`/${page}`}>
+                                    <ListItemText primary={page.toUpperCase()} />
+                                </ListItemButton>
+                            </ListItem>
+                        ))}
+                    </List>
+                </Box>
+            </Drawer>
         </AppBar>
     );
 }
+
 export default NavBar;
+
+
